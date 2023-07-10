@@ -75,7 +75,7 @@ def main():
     thread.start()
 
 def main_thread():
-    graph = read_graph_from_file("/Users/thomasborbeli/Documents/Programming/Algorithms - Tim Roughgarden/Course2/Week1/examinput_correct.txt")
+    graph = read_graph_from_file("Course2/Week1/examinput_correct.txt")
     result = kosoraju(graph)
     print(result)
 
