@@ -3,14 +3,13 @@ package Week1.assignment3;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
 public class Assignment3 {
 
     private static Graph createGraphFromFile(String fileName) {
         try {
 
-            BufferedReader reader = new BufferedReader(new FileReader("Course3/src/Week1/assignment3/edges.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
 
             String line = reader.readLine();
 
@@ -20,7 +19,7 @@ public class Assignment3 {
 
             line = reader.readLine();
 
-            while(line != null) {
+            while (line != null) {
 
                 split = line.split(" ");
 
@@ -39,13 +38,13 @@ public class Assignment3 {
     }
 
 
-    private static int costOfMSTPrimAlgorithm(Graph graph) {
+    private static int calculateTotalCostOfMSTPrimAlgorithm(Graph graph) {
         //TODO Implement Prim's MST Algorithm
         return 0;
     }
 
     public static void main(String[] args) {
         Graph graph = createGraphFromFile("Course3/src/Week1/assignment3/edges.txt");
-        System.out.println(costOfMSTPrimAlgorithm(graph));
+        System.out.println(calculateTotalCostOfMSTPrimAlgorithm(graph));
     }
 }
