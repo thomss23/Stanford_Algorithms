@@ -15,9 +15,9 @@ public class Graph {
     public Graph(int numberOfNodes, int numberOfEdges) {
         this.numberOfEdges = numberOfEdges;
         this.numberOfNodes = numberOfNodes;
-        this.adjacencyList = new ArrayList<>(numberOfNodes);
+        this.adjacencyList = new ArrayList<>();
 
-        for (int i = 0; i < numberOfNodes; i++) {
+        for (int i = 0; i <= numberOfNodes; i++) {
             this.adjacencyList.add(new ArrayList<>());
         }
     }
