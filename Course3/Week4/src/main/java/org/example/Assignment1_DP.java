@@ -8,9 +8,6 @@ import java.util.List;
 
 public class Assignment1_DP {
 
-
-
-
     public static void main(String[] args)
     {
         try{
