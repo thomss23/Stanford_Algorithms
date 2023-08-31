@@ -1,6 +1,7 @@
 import random
-import itertools   
+import itertools
 import math
+
 
 # Papadimitriou algorithm
 
@@ -13,25 +14,20 @@ import math
 
 
 def papadimitriou_local_search_2sat(variables, clauses):
-    times_to_run = math.log(len(clauses), 2)
-
-    while(times_to_run != 0):
+    n = len(clauses)
+    log2n = math.log2(n)
+    for i in range(log2n):
         variables = choose_random_initial_assignment(variables)
-
-        iterations = 2 * len(clauses) ** 2
-
-        while(iterations != 0):
-
+        for j in range(2 * n * n):
             if is_assignment_satisfying_clauses(variables, clauses):
-                return "satisfiable"
+                return True
             else:
                 unsatisfiable_clause = pick_unsatisfiable_clause(variables, clauses)
                 variables = flip_random_variable_from_unsatisfiable_clause(variables, unsatisfiable_clause)
-            iterations = iterations - 1
-        times_to_run = times_to_run - 1
-    
-    return "unsatisfiable"
-                
+
+    return False
+
+
 def read_clauses_from_file(file_name):
     variables = {}
     clauses = []
@@ -51,14 +47,12 @@ def read_clauses_from_file(file_name):
 
 def choose_random_initial_assignment(variables):
     for key in variables:
-        randBool = random.choice([True, False])
-        variables[key] = randBool
-    
+        variables[key] = random.choice([True, False])
+
     return variables
 
+
 def is_assignment_satisfying_clauses(variables, clauses):
-    var1_to_check = False
-    var2_to_check = False
 
     for clause in clauses:
         var1, var2 = clause
@@ -71,18 +65,17 @@ def is_assignment_satisfying_clauses(variables, clauses):
         if var2 < 0:
             var2_to_check = not variables[abs(var2)]
         else:
-            var2_to_check = variables[var2]    
+            var2_to_check = variables[var2]
 
-        if var1_to_check or var2_to_check :
+        if var1_to_check or var2_to_check:
             continue
         else:
             return False
     return True
 
+
 def pick_unsatisfiable_clause(variables, clauses):
     unsatisfiable_clauses = []
-    var1_to_check = False
-    var2_to_check = False
 
     for clause in clauses:
         var1, var2 = clause
@@ -95,9 +88,9 @@ def pick_unsatisfiable_clause(variables, clauses):
         if var2 < 0:
             var2_to_check = not variables[abs(var2)]
         else:
-            var2_to_check = variables[var2]    
+            var2_to_check = variables[var2]
 
-        if var1_to_check or var2_to_check :
+        if var1_to_check or var2_to_check:
             unsatisfiable_clauses.append(clause)
 
     return random.choice(unsatisfiable_clauses)
@@ -106,13 +99,53 @@ def pick_unsatisfiable_clause(variables, clauses):
 def flip_random_variable_from_unsatisfiable_clause(variables, unsatisfiable_clause):
     var1, var2 = unsatisfiable_clause
 
-    variable_to_flip = random.choice([var1,var2])
+    variable_to_flip = random.choice([var1, var2])
 
     variables[variable_to_flip] = not variables[abs(variable_to_flip)]
 
     return variables
 
 
-variables, clauses = read_clauses_from_file("simple_test_case.txt")
+def remove_unnecessary_clauses(clauses):
+    while True:
+        # Create dictionaries to track variable appearances as negated or not
+        variable_negations = {}
 
-print(papadimitriou_local_search_2sat(variables, clauses))
+        # Iterate through the clauses and record variable negations
+        for var1, var2 in clauses:
+            variable_negations[abs(var1)] = variable_negations.get(abs(var1), set())
+            variable_negations[abs(var2)] = variable_negations.get(abs(var2), set())
+
+            if var1 < 0:
+                variable_negations[abs(var1)].add(False)
+            else:
+                variable_negations[abs(var1)].add(True)
+
+            if var2 < 0:
+                variable_negations[abs(var2)].add(False)
+            else:
+                variable_negations[abs(var2)].add(True)
+
+        removable_vars = set()
+
+        # Find variables that are either always negated or never negated
+        for var, negations in variable_negations.items():
+            if len(negations) == 1:
+                removable_vars.add(var)
+
+        if not removable_vars:
+            break
+
+        # Remove clauses containing removable variables
+        clauses = [clause for clause in clauses if not any(abs(var) in removable_vars for var in clause)]
+
+    return clauses
+
+
+variables, clauses = read_clauses_from_file("2sat3.txt")
+
+clauses2 = remove_unnecessary_clauses(clauses)
+
+print(len(clauses2))
+#solution 101100
+print(papadimitriou_local_search_2sat(variables, clauses2))
